@@ -1,11 +1,13 @@
 package hashmap
 
+// TODO: The value 'generic'
 type HashMapNode struct {
 	key   string
-	value int // this should be a pointer to any type
+	value int
 }
 
-// has an array of HashMapNodes
+// HashMap implemented with a fixed size.
+// Usese chaining to resolve collisions.
 type HashMap struct {
 	size    int
 	count   int
