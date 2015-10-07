@@ -1,0 +1,3 @@
+package hashmap
+
+import "testing"
