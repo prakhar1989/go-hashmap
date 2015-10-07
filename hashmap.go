@@ -12,7 +12,30 @@ type HashMap struct {
 	buckets [][]HashMapNode
 }
 
-/* METHODS */
+/** PRIVATE METHODS **/
+
+// returns the index at which the key needs to go
+// TODO: Do we need to typecast again?
+func (h *HashMap) getIndex(key string) int {
+	return int(hash(key)) % h.size
+}
+
+// Implements the Jenkins hash function
+// TODO: What should the return type be?
+func hash(key string) uint32 {
+	var h uint32 = 0
+	for _, c := range key {
+		h += uint32(c)
+		h += (h << 10)
+		h ^= (h >> 6)
+	}
+	h += (h << 3)
+	h ^= (h >> 11)
+	h += (h << 15)
+	return h
+}
+
+/** PUBLIC METHODS **/
 
 // Constuctor that returns a new HashMap
 func NewHashMap(size int) *HashMap {
@@ -26,16 +49,10 @@ func NewHashMap(size int) *HashMap {
 	return h
 }
 
-// returns the index at which the key needs to go
-// TODO: Do we need to typecast again?
-func (h *HashMap) getIndex(key string) int {
-	return int(hash(key)) % h.size
-}
-
 // gets the value associated with a key in the hashmap
 // returns the value to be true / false depending on whether
 // the key exists in the hashmap
-func (h *HashMap) get(key string) (int, bool) {
+func (h *HashMap) Get(key string) (int, bool) {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 	for _, node := range chain {
@@ -47,7 +64,7 @@ func (h *HashMap) get(key string) (int, bool) {
 }
 
 // sets the value for an associated key in the hashmap
-func (h *HashMap) set(key string, value int) bool {
+func (h *HashMap) Set(key string, value int) bool {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 	found := false
@@ -72,7 +89,7 @@ func (h *HashMap) set(key string, value int) bool {
 	return true
 }
 
-func (h *HashMap) delete(key string) (int, bool) {
+func (h *HashMap) Delete(key string) (int, bool) {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 
@@ -102,21 +119,6 @@ func (h *HashMap) delete(key string) (int, bool) {
 }
 
 // returns the load factor of the hashmap
-func (h *HashMap) load() float32 {
+func (h *HashMap) Load() float32 {
 	return float32(h.count) / float32(h.size)
-}
-
-// Implements the Jenkins hash function
-// TODO: What should the return type be?
-func hash(key string) uint32 {
-	var h uint32 = 0
-	for _, c := range key {
-		h += uint32(c)
-		h += (h << 10)
-		h ^= (h >> 6)
-	}
-	h += (h << 3)
-	h ^= (h >> 11)
-	h += (h << 15)
-	return h
 }
