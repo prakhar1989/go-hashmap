@@ -1,5 +1,7 @@
 package hashmap
 
+import "errors"
+
 // TODO: The value 'generic'
 type HashMapNode struct {
 	key   string
@@ -39,16 +41,20 @@ func hash(key string) uint32 {
 
 /** PUBLIC METHODS **/
 
-// Constuctor that returns a new HashMap
-func NewHashMap(size int) *HashMap {
+// Constuctor that returns a new HashMap of a fixed size
+// returns an error when a size of 0 is provided
+func NewHashMap(size int) (*HashMap, error) {
 	h := new(HashMap)
+	if size < 1 {
+		return h, errors.New("size of hashmap has to be > 1")
+	}
 	h.size = size
 	h.count = 0
 	h.buckets = make([][]HashMapNode, size)
 	for i := range h.buckets {
 		h.buckets[i] = make([]HashMapNode, 1)
 	}
-	return h
+	return h, nil
 }
 
 // gets the value associated with a key in the hashmap
