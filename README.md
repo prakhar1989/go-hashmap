@@ -29,7 +29,7 @@ func main() {
     for _, key := range keys {
         val, present := h.Get(key)
         if present {
-            fmt.Println("Key:", key, "->", "Value:", val)
+            fmt.Println("Key:", key, "->", "Value:", val.Value.(int))
         } else {
             fmt.Println(key, "is not present")
         }
