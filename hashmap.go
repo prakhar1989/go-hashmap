@@ -2,14 +2,13 @@ package hashmap
 
 import "errors"
 
-// TODO: The value 'generic'
 type HashMapNode struct {
 	key   string
-	value int
+	Value interface{}
 }
 
 // HashMap implemented with a fixed size.
-// Usese chaining to resolve collisions.
+// Uses chaining to resolve collisions.
 type HashMap struct {
 	size    int
 	count   int
@@ -19,13 +18,11 @@ type HashMap struct {
 /** PRIVATE METHODS **/
 
 // returns the index at which the key needs to go
-// TODO: Do we need to typecast again?
 func (h *HashMap) getIndex(key string) int {
 	return int(hash(key)) % h.size
 }
 
 // Implements the Jenkins hash function
-// TODO: What should the return type be?
 func hash(key string) uint32 {
 	var h uint32 = 0
 	for _, c := range key {
@@ -60,26 +57,26 @@ func NewHashMap(size int) (*HashMap, error) {
 // gets the value associated with a key in the hashmap
 // returns the value to be true / false depending on whether
 // the key exists in the hashmap
-func (h *HashMap) Get(key string) (int, bool) {
+func (h *HashMap) Get(key string) (*HashMapNode, bool) {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 	for _, node := range chain {
 		if node.key == key {
-			return node.value, true
+			return &node, true
 		}
 	}
-	return 0, false
+	return nil, false
 }
 
 // sets the value for an associated key in the hashmap
-func (h *HashMap) Set(key string, value int) bool {
+func (h *HashMap) Set(key string, value interface{}) bool {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 	found := false
 	for _, node := range chain {
 		// if the key already exists
 		if node.key == key {
-			node.value = value
+			node.Value = value
 			found = true
 		}
 	}
@@ -90,25 +87,27 @@ func (h *HashMap) Set(key string, value int) bool {
 		return false
 	}
 	// add a new node
-	node := HashMapNode{key: key, value: value}
+	node := HashMapNode{key: key, Value: value}
 	chain = append(chain, node)
 	h.buckets[index] = chain
 	h.count += 1
 	return true
 }
 
-func (h *HashMap) Delete(key string) (int, bool) {
+func (h *HashMap) Delete(key string) (*HashMapNode, bool) {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 
-	// start a search for the key
 	found := false
-	var location, value int
+	var location int
+	var mapNode *HashMapNode
+
+	// start a search for the key
 	for loc, node := range chain {
 		if node.key == key {
 			found = true
 			location = loc
-			value = node.value
+			mapNode = &node
 		}
 	}
 
@@ -119,11 +118,11 @@ func (h *HashMap) Delete(key string) (int, bool) {
 		chain[location], chain[N] = chain[N], chain[location]
 		chain = chain[:N]
 		h.buckets[index] = chain
-		return value, true
+		return mapNode, true
 	}
 
 	// if not found return false
-	return 0, false
+	return nil, false
 }
 
 // returns the load factor of the hashmap
