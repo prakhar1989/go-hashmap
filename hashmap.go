@@ -1,7 +1,6 @@
 package hashmap
 
 import "errors"
-import "fmt"
 
 type HashMapNode struct {
 	key   string
@@ -39,6 +38,16 @@ func hash(key string) uint32 {
 
 /** PUBLIC METHODS **/
 
+// get the count of the elements in the hashmap
+func (h *HashMap) Len() int {
+	return h.count
+}
+
+// get the size of the hashamp
+func (h *HashMap) Size() int {
+	return h.size
+}
+
 // Constuctor that returns a new HashMap of a fixed size
 // returns an error when a size of 0 is provided
 func NewHashMap(size int) (*HashMap, error) {
@@ -69,46 +78,41 @@ func (h *HashMap) Get(key string) (*HashMapNode, bool) {
 	return nil, false
 }
 
-func (h *HashMap) Len() int {
-	return h.count
-}
-
-func (h *HashMap) Size() int {
-	return h.size
-}
-
-// sets the value for an associated key in the hashmap
+// set the value for an associated key in the hashmap
 func (h *HashMap) Set(key string, value interface{}) bool {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 	found := false
 
-	for _, node := range chain {
-		fmt.Println("Iterating in chain:", node)
-		// if the key already exists
+	// first see if the key already exists
+	for i := range chain {
+		// if found, update the value
+		node := &chain[i]
 		if node.key == key {
 			node.Value = value
 			found = true
-			fmt.Println(node)
 		}
 	}
 	if found { // hashmap has been updated
-		fmt.Println(chain)
 		return true
 	}
-	if h.size == h.count { // hashmap is full
+
+	// if key doesn't exist, add it to the hashmap
+	// first check whether space exists
+	if h.size == h.count {
 		return false
 	}
-	// add a new node
+
+	// yup there's space, let's add a new node
 	node := HashMapNode{key: key, Value: value}
 	chain = append(chain, node)
 	h.buckets[index] = chain
 	h.count += 1
 
-	fmt.Println("Final chain", chain)
 	return true
 }
 
+// delete the value associated with key in the hashmap
 func (h *HashMap) Delete(key string) (*HashMapNode, bool) {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
