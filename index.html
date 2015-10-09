@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+</head>
+<body>
+<h3 id="hashmap">Hashmap</h3>
+<p>A naive implementation of a Hash map in <a href="https://golang.org/">Golang</a>.</p>
+<h3 id="background">Background</h3>
+<p>I'm primarily a Python developer by trade and most of my experience is with dynamic languages. So my first attempt at solving this problem was an implementation in Python. However, since the question was a way to make your application stand-out, I thought it would be fun and rewarding to build solve this problem in a (relatively new) statically compiled language. Since Go has been gaining momentum rapidly I decided to build this up in Go. Another key reason why I decided to use a new language was to demonstrate that I'm a quick learner. Since most startups are typically looking for generalists who can learn quickly, I thought it would be a good way to show my enthusiasm and passion for hi-tech startups. The code that you might see in the subsequent files might not be most idiomatic Go but it works and (hopefully) fulfills the specification.</p>
+<h3 id="about-me">About Me</h3>
+<p>I'm a CS masters student in Columbia University where I'm specializing in Machine Learning. With around 3-4 years of experience as a full stack developer I've worked with varities of technologies e.g. Rails / Django / Flask on the backend &amp; React / Angular / Backbone on the frontend. More importantly, I'm extremely passionate about open-source, writing and doing side-projects.</p>
+<p>To know more about me, please visit the following links:</p>
+<ul>
+<li>Github: <a href="http://github.com/prakhar1989" class="uri">http://github.com/prakhar1989</a></li>
+<li>Portfolio: <a href="http://prakhar.me/projects" class="uri">http://prakhar.me/projects</a></li>
+<li>Blog: <a href="http://prakhar.me/articles" class="uri">http://prakhar.me/articles</a></li>
+</ul>
+<p>Outside of programming, reading about startups and business is one of my key interests. Having spent inordinate amount of time lurking on <a href="https://news.ycombinator.com/user?id=krat0sprakhar">HN</a> and reading Paul Graham's essays, I've come to believe that working at a startup right out of school is one of the best way to kickstart your career. Hence, getting an opportuinity to work with one of the portfolio companies of KPCB would be super fun.</p>
+<h3 id="compile">Compile</h3>
+<p>In order to compile the program for your environment, you need to have the Go compiler installed. The compiler is distributed as a binary and can be downloaded from the <a href="https://golang.org/dl/">website</a>. Once the compiler is ready, just run the command below to download the code as a package.</p>
+<pre><code>$ go get github.com/prakhar1989/go-hashmap</code></pre>
+<p>With the dependancies in place, you can now copy/paste the code below and run it with. Alternatively, you can run the example code in the <code>example</code> directory.</p>
+<pre><code>$ go run main.go</code></pre>
+<h3 id="structure">Structure</h3>
+<p>The source code comes in just two files - the main library and an accompanying test suite. The <code>hashmap.go</code> file contains the implementation of the hashmap specification and the <code>hashmap_test.go</code> has the testcases for the implementation.</p>
+<pre><code>$ hashmap git:(master) go test
+PASS
+ok      github.com/prakhar1989/hashmap0.006s</code></pre>
+<h3 id="usage">Usage</h3>
+<div class="sourceCode"><pre class="sourceCode go"><code class="sourceCode go"><span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">&quot;fmt&quot;</span>
+    <span class="st">&quot;github.com/prakhar1989/hashmap&quot;</span>
+)
+
+<span class="kw">func</span> main() {
+    h, _ := hashmap.NewHashMap(<span class="dv">100</span>) <span class="co">// create the hashmap</span>
+    keys := []<span class="dt">string</span>{<span class="st">&quot;alpha&quot;</span>, <span class="st">&quot;beta&quot;</span>, <span class="st">&quot;charlie&quot;</span>, <span class="st">&quot;gamma&quot;</span>, <span class="st">&quot;delta&quot;</span>}
+
+    <span class="co">// add the keys</span>
+    <span class="kw">for</span> _, key := <span class="kw">range</span> keys {
+        h.Set(key, <span class="fu">len</span>(key))
+    }
+
+    fmt.Println(<span class="st">&quot;The load factor is:&quot;</span>, h.Load())
+
+    <span class="co">// retrieve the keys</span>
+    <span class="kw">for</span> _, key := <span class="kw">range</span> keys {
+        val, present := h.Get(key)
+        <span class="kw">if</span> present {
+            fmt.Println(<span class="st">&quot;Key:&quot;</span>, key, <span class="st">&quot;-&gt;&quot;</span>, <span class="st">&quot;Value:&quot;</span>, val.Value.(<span class="dt">int</span>))
+        } <span class="kw">else</span> {
+            fmt.Println(key, <span class="st">&quot;is not present&quot;</span>)
+        }
+    }
+
+    <span class="co">// delete a key</span>
+    fmt.Println(h.Delete(<span class="st">&quot;alpha&quot;</span>))
+    _, present := h.Get(<span class="st">&quot;alpha&quot;</span>)
+    <span class="kw">if</span> present {
+        fmt.Println(<span class="st">&quot;The key&#39;s still there&quot;</span>)
+    } <span class="kw">else</span> {
+        fmt.Println(<span class="st">&quot;Value associated with alpha deleted&quot;</span>)
+    }
+}</code></pre></div>
+<p>Here's the output of running this program</p>
+<pre><code>$ go run example/main.go
+The load factor is: 0.25
+Key: alpha -&gt; Value: 5
+Key: beta -&gt; Value: 4
+Key: charlie -&gt; Value: 7
+Key: gamma -&gt; Value: 5
+Key: delta -&gt; Value: 5
+&lt;nil&gt; false
+Value associated with alpha deleted</code></pre>
+<h3 id="disclaimer">Disclaimer</h3>
+<p>Although the implementation tries to stay as close to the spec as it can, in a few places it does behave differently. This is has primarily been done in order to stay idiomatic with the language. For example, instead of returning a <code>nil</code> or a value, the <code>Delete</code> instead returns a value and a boolean flag indicating the success and failure of the operation. Another example is that the constructor throws up an error when initialized with a non-positive value of size.</p>
+</body>
+</html>
