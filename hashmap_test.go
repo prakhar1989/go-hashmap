@@ -61,6 +61,12 @@ func TestLenAndLoad(t *testing.T) {
 		if got != c.want {
 			t.Errorf("Len(%d) == %d, want %d", c.in, got, c.want)
 		}
+
+		load := h.Load()
+		want := float32(c.in) / float32(c.in*10)
+		if load != want {
+			t.Errorf("Load(%d) == %d, want %d", c.in, load, want)
+		}
 	}
 }
 
@@ -102,5 +108,54 @@ func TestGetAndSet(t *testing.T) {
 	k[0] = 100
 	if k[0] != arr[0] {
 		t.Errorf("Reference has not been mutated")
+	}
+}
+
+func TestCollisions(t *testing.T) {
+	// a small hashmap that is bound to have collisions
+	h, _ := NewHashMap(5)
+
+	keys := []string{"alpha", "beta", "charlie", "gamma", "delta"}
+
+	for _, key := range keys {
+		h.Set(key, len(key))
+	}
+
+	for _, key := range keys {
+		got, _ := h.Get(key)
+		want := len(key)
+		if got.Value.(int) != len(key) {
+			t.Errorf("want: %q, got: %q", want, got)
+		}
+	}
+}
+
+func TestDelete(t *testing.T) {
+	// a hashtable with just one elem
+	h, _ := NewHashMap(1)
+	h.Set("alpha", 10)
+
+	// should not be allowed to add
+	status := h.Set("beta", 20)
+	if status {
+		t.Errorf("Able to add more elements than the allowed size")
+	}
+
+	// lets delete first
+	_, status = h.Delete("alpha")
+	if !status {
+		t.Errorf("Unable to delete")
+	}
+
+	// and add beta now
+	status = h.Set("beta", 20)
+	if !status {
+		t.Errorf("Unable to add element")
+	}
+
+	// lastly, lets delete a non-existent element
+	_, status = h.Delete("gamma")
+	if status {
+		t.Errorf("Deleted a missing key")
 	}
 }
