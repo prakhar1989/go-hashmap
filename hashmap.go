@@ -1,6 +1,7 @@
 package hashmap
 
 import "errors"
+import "fmt"
 
 type HashMapNode struct {
 	key   string
@@ -49,7 +50,7 @@ func NewHashMap(size int) (*HashMap, error) {
 	h.count = 0
 	h.buckets = make([][]HashMapNode, size)
 	for i := range h.buckets {
-		h.buckets[i] = make([]HashMapNode, 1)
+		h.buckets[i] = make([]HashMapNode, 0)
 	}
 	return h, nil
 }
@@ -68,19 +69,31 @@ func (h *HashMap) Get(key string) (*HashMapNode, bool) {
 	return nil, false
 }
 
+func (h *HashMap) Len() int {
+	return h.count
+}
+
+func (h *HashMap) Size() int {
+	return h.size
+}
+
 // sets the value for an associated key in the hashmap
 func (h *HashMap) Set(key string, value interface{}) bool {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 	found := false
+
 	for _, node := range chain {
+		fmt.Println("Iterating in chain:", node)
 		// if the key already exists
 		if node.key == key {
 			node.Value = value
 			found = true
+			fmt.Println(node)
 		}
 	}
 	if found { // hashmap has been updated
+		fmt.Println(chain)
 		return true
 	}
 	if h.size == h.count { // hashmap is full
@@ -91,6 +104,8 @@ func (h *HashMap) Set(key string, value interface{}) bool {
 	chain = append(chain, node)
 	h.buckets[index] = chain
 	h.count += 1
+
+	fmt.Println("Final chain", chain)
 	return true
 }
 
