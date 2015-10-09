@@ -2,6 +2,7 @@ package hashmap
 
 import "errors"
 
+// the node which is stored at each level
 type HashMapNode struct {
 	key   string
 	Value interface{}
