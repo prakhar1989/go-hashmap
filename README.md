@@ -16,6 +16,9 @@ To know more about me, please visit the following links:
 
 Outside of programming, reading about startups and business is one of my key interests. Having spent inordinate amount of time lurking on [HN](https://news.ycombinator.com/user?id=krat0sprakhar) and reading Paul Graham's essays, I've come to believe that working at a startup right out of school is one of the best way to kickstart your career. Hence, getting an opportuinity to work with one of the portfolio companies of KPCB would be super fun.
 
+### Code
+The [source code](https://github.com/prakhar1989/go-hashmap/tree/gh-pages) and the [readme](http://prakhar.me/go-hashmap/) can both be accessed online.
+
 ### Compile
 In order to compile the program for your environment, you need to have the Go compiler installed. The compiler is distributed as a binary and can be downloaded from the [website](https://golang.org/dl/). Once the compiler is ready, just run the command below to download the code as a package.
 
