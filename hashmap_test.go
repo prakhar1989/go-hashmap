@@ -65,7 +65,7 @@ func TestLenAndLoad(t *testing.T) {
 		load := h.Load()
 		want := float32(c.in) / float32(c.in*10)
 		if load != want {
-			t.Errorf("Load(%d) == %d, want %d", c.in, load, want)
+			t.Errorf("Load(%d) == %f, want %f", c.in, load, want)
 		}
 	}
 }

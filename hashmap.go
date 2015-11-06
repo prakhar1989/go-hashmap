@@ -2,8 +2,8 @@ package hashmap
 
 import "errors"
 
-// the node which is stored at each level
-type HashMapNode struct {
+// Node which is stored at each level
+type Node struct {
 	key   string
 	Value interface{}
 }
@@ -13,7 +13,7 @@ type HashMapNode struct {
 type HashMap struct {
 	size    int
 	count   int
-	buckets [][]HashMapNode
+	buckets [][]Node
 }
 
 /** PRIVATE METHODS **/
@@ -25,7 +25,7 @@ func (h *HashMap) getIndex(key string) int {
 
 // Implements the Jenkins hash function
 func hash(key string) uint32 {
-	var h uint32 = 0
+	var h uint32
 	for _, c := range key {
 		h += uint32(c)
 		h += (h << 10)
@@ -39,17 +39,17 @@ func hash(key string) uint32 {
 
 /** PUBLIC METHODS **/
 
-// get the count of the elements in the hashmap
+// Len returns the count of the elements in the hashmap
 func (h *HashMap) Len() int {
 	return h.count
 }
 
-// get the size of the hashamp
+// Size returns the size of the hashamp
 func (h *HashMap) Size() int {
 	return h.size
 }
 
-// Constuctor that returns a new HashMap of a fixed size
+// NewHashMap is the constuctor that returns a new HashMap of a fixed size
 // returns an error when a size of 0 is provided
 func NewHashMap(size int) (*HashMap, error) {
 	h := new(HashMap)
@@ -58,17 +58,16 @@ func NewHashMap(size int) (*HashMap, error) {
 	}
 	h.size = size
 	h.count = 0
-	h.buckets = make([][]HashMapNode, size)
+	h.buckets = make([][]Node, size)
 	for i := range h.buckets {
-		h.buckets[i] = make([]HashMapNode, 0)
+		h.buckets[i] = make([]Node, 0)
 	}
 	return h, nil
 }
 
-// gets the value associated with a key in the hashmap
-// returns the value to be true / false depending on whether
-// the key exists in the hashmap
-func (h *HashMap) Get(key string) (*HashMapNode, bool) {
+// Get returns the value associated with a key in the hashmap,
+// and an error indicating whether the value exists
+func (h *HashMap) Get(key string) (*Node, bool) {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 	for _, node := range chain {
@@ -79,7 +78,7 @@ func (h *HashMap) Get(key string) (*HashMapNode, bool) {
 	return nil, false
 }
 
-// set the value for an associated key in the hashmap
+// Set the value for an associated key in the hashmap
 func (h *HashMap) Set(key string, value interface{}) bool {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
@@ -105,22 +104,22 @@ func (h *HashMap) Set(key string, value interface{}) bool {
 	}
 
 	// yup there's space, let's add a new node
-	node := HashMapNode{key: key, Value: value}
+	node := Node{key: key, Value: value}
 	chain = append(chain, node)
 	h.buckets[index] = chain
-	h.count += 1
+	h.count++
 
 	return true
 }
 
-// delete the value associated with key in the hashmap
-func (h *HashMap) Delete(key string) (*HashMapNode, bool) {
+// Delete the value associated with key in the hashmap
+func (h *HashMap) Delete(key string) (*Node, bool) {
 	index := h.getIndex(key)
 	chain := h.buckets[index]
 
 	found := false
 	var location int
-	var mapNode *HashMapNode
+	var mapNode *Node
 
 	// start a search for the key
 	for loc, node := range chain {
@@ -133,7 +132,7 @@ func (h *HashMap) Delete(key string) (*HashMapNode, bool) {
 
 	// if found delete the elem from the slice
 	if found {
-		h.count -= 1
+		h.count--
 		N := len(chain) - 1
 		chain[location], chain[N] = chain[N], chain[location]
 		chain = chain[:N]
@@ -145,7 +144,7 @@ func (h *HashMap) Delete(key string) (*HashMapNode, bool) {
 	return nil, false
 }
 
-// returns the load factor of the hashmap
+// Load returns the load factor of the hashmap
 func (h *HashMap) Load() float32 {
 	return float32(h.count) / float32(h.size)
 }
